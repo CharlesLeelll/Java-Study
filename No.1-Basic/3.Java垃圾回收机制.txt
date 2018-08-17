@@ -1,0 +1,95 @@
+垃圾回收 {
+
+	垃圾回收机制的意义 {
+		有效防止内存泄露(内存空间使用完毕后未收回,也称"对象游离")
+		有效使用空闲内存
+	}
+	
+	垃圾回收机制的算法 {
+		目标 {
+			发现无用的信息对象
+			回收内存空间
+		}
+		
+		引用计数法 {
+			早期策略 被引用+1,取消引用-1. 0被收集
+			优点 -- 执行快,交织在程序运行中
+			缺点 -- 无法检测循环引用
+		}
+		
+		tracing算法(Tracing Collector)/标记-清除算法(mark and sweep) {
+			根搜索算法 {
+				从节点GC ROOT开始,寻找引用节点...寻找完毕后剩余的节点->无用的节点
+				GC ROOT {
+					虚拟机栈中引用的对象(本地变量表)
+					方法区中静态属性引用的对象
+					方法区中常量引用的对象
+					本地方法栈中引用的对象(Native对象)
+				}
+				标记-清除算法不移动对象,直接回收不存活的对象->内存碎片
+			}
+		}
+		
+		compacting算法/标记-整理算法 {
+			回收不存活的对象时,移动存活对象至空闲空间->消除内存碎片
+			基于compatcting算法的收集器的实现中,一般增加句柄和句柄表
+		}
+		
+		copying算法(Compacting Collector) {
+			克服句柄的开销,解决堆碎片
+			多个面,满->copy至空闲面->回收不存活的对象
+		}
+		
+		generation算法(Generation Collector) {
+			不同的对象生命周期不同(不同周期的对象采取不同的回收算法)
+			
+			年轻代(Young Generation) {
+				新生对象放在此. 目标 -- 尽可能快的收集生命周期短的对象
+				8:1:1  eden:survivor0:survivor1
+					对象 --> eden
+					eden -copy-> survivor0 & eden -> clr
+					survivor0 -> full  eden+survivor0 -copy-> survivor1 & e s -> clr
+					survivor0 <-swap-> survivor1
+				survivor区不足存放-->年老代
+				新生代发生的GC -- Minor GC,发生频率较高
+			}
+			
+			年老代(Old Generation) {
+				年轻代经历多次GC后存活的对象 存放至 年老代中
+				内存 > 年轻代 (1:2)
+				年老代满 --> Full GC 频率低
+			}
+			
+			持久代(Permanent Generation) {
+				用于存放静态文件
+			}
+		}
+	}
+	
+	GC {
+		Serial收集器（复制算法)
+		Serial Old收集器(标记-整理算法)
+		ParNew收集器(停止-复制算法)　
+		Parallel Scavenge收集器(停止-复制算法)
+		Parallel Old收集器(停止-复制算法)
+		CMS(Concurrent Mark Sweep)收集器（标记-清理算法）
+	}
+	
+	GC 执行机制 {
+		Scavenge GC & Full GC
+		Scavenge GC -->  eden		快
+		Full GC --> 堆				慢
+		导致Full GC {
+			年老代写满
+			持久代写满
+			System.gc()
+			上一次GC后Heap的各域分配策略动态变化
+		}
+	}
+	
+	内存泄露问题 {
+		静态集合类 HashMap, Vector......
+		连接 DB, 网络, IO......
+		监听器的使用
+	}
+}

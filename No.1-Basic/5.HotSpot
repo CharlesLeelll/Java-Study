@@ -1,0 +1,17 @@
+HotSpot {
+	Java虚拟机,代替JIT,可以大大提高Java运行的性能
+	
+	包括一个解释器&两个编译器(client & server,二选一),解释与编译混合执行模式,默认启动解释执行
+	
+	编译器 -- .java -> .class 
+	解释器 -- 解释.class
+	
+	server启动慢,占内存大,效率高,适用于服务器端应用
+	client启动快,占内存小,效率低于server,默认不进行动态编译,适用于桌面应用
+	由-XX:+RewriteFrequentPairs参数控制  client模式默认关闭，server模式默认开启
+	在jre安装目录下的lib/i386/jvm.cfg 文件下
+	
+	动态编译 {
+		HotSpot编译是在运行过程中编译的
+	}
+}
