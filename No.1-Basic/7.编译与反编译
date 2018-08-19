@@ -1,0 +1,20 @@
+编译与反编译(Java) {
+	
+	编译命令 -- javac
+	编译 -- .java(OS) → .class(JVM)
+	
+	反编译 -- .class → .java
+	反编译工具 {
+		javap -- JDK自带  .class → 字节码
+		jad
+		cfr
+		JD-GUI -- 可视化反编译工具
+	}
+	
+	防止反编译(保护) {
+		隔离 .class文件
+		加密 .class文件
+		代码混淆
+	}
+	
+}
